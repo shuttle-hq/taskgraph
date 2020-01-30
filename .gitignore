@@ -1,0 +1,20 @@
+coverage/
+node_modules/
+dist/hot
+dist/
+
+# temporary jenkins files
+test/test.js.tap
+jshint.xml
+jshint-proper.xml
+
+core
+package-lock.json
+yarn.lock
+npm-debug.log
+
+# WebStorm
+.idea
+
+.DS_Store
+*.log

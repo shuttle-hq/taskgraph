@@ -1,0 +1,15 @@
+{
+  "plugins": [
+    "transform-object-assign",
+    "transform-es2015-destructuring",
+    "transform-object-rest-spread",
+    "transform-class-properties"
+  ],
+  "presets": [
+    "flow",
+    "react",
+    "es2015",
+    "stage-2"
+  ],
+  "compact" : true
+}
