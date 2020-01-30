@@ -66,9 +66,16 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
 
     componentDidMount() {
         fetch('http://localhost:3001/state').then(res => {
-            return res.json()
+            if (res.status === 200) {
+                return res.json()
+            } else {
+                return null;
+            }
+
         }).then(res => {
-            this.setState({ graph: res});
+            if (res != null) {
+                this.setState({graph: res});
+            }
         });
     }
 

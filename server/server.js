@@ -51,8 +51,12 @@ app.get('/state', (req, res) => {
                 res.sendStatus(500);
             } else {
                 // Hacky hacky hack because I don't want to define a schema yet
-                let graph = JSON.parse(JSON.stringify(model)).graph;
-                res.json(graph);
+                if (model == null) {
+                    res.sendStatus(404);
+                } else {
+                    let graph = JSON.parse(JSON.stringify(model)).graph;
+                    res.json(graph);
+                }
             }
         });
 });
