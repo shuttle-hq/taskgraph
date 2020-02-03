@@ -65,6 +65,7 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
     }
 
     componentDidMount() {
+        // Get the latest graph from the server
         fetch('http://localhost:3001/state').then(res => {
             if (res.status === 200) {
                 return res.json()
@@ -75,21 +76,9 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
         }).then(res => {
             if (res != null) {
                 this.setState({graph: res});
+                this.calculateDateEstimates();
             }
         });
-    }
-
-    getLatestGraph() {
-        // const xhr = new XMLHttpRequest();
-        //
-        // xhr.open('GET', 'http://localhost:3001/state');
-        // xhr.send();
-        //
-        // xhr.onload = function () {
-        //     this.setState({"graph": JSON.parse(xhr.responseText)});
-        //     console.log("Got here");
-        // };
-
 
     }
 
@@ -143,6 +132,14 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
             },
             this.redrawAndSave()
         );
+    };
+
+    handleStatusChange = (event: any) => {
+        const selected = this.state.selected;
+        selected.status = event.target.value;
+        this.setState({
+            selected: selected
+        }, this.redrawAndSave())
     };
 
     /*
@@ -207,6 +204,89 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
 
         this.setState({graph, selected: null}, this.redrawAndSave());
     };
+
+    calculateDateEstimates() {
+        // We estimate the predicted time of completion of root nodes,
+        // By summing the time of their dependencies recursively.
+        // Lot's of features need to be added here, such as having capacity,
+        // Node type (technical, business and so on)
+
+        // For that we need to add the concept of a 'team' to the project
+
+
+        // 1) Find root nodes
+        // 2) Find the total number of days
+        // 3) Convert that to a date, so omit weekends. This should be done at the presentation layer
+        // 4) Also we need to disallow cycles, or things will exprode
+
+        let rootNodes = this.findRootNodes();
+        let graph = this.updateGraphTotalTimeEstimates(rootNodes, this.state.graph);
+
+        this.setState({graph: graph});
+    }
+
+    findRootNodes() {
+        // Gets the root nodes of the graph
+        // O(n^2) for now. Can be made faster but meh.
+        let rootNodes = [];
+        this.state.graph.nodes.forEach(node => {
+            let isRoot = true;
+            this.state.graph.edges.forEach(edge => {
+                if (edge.source === node.id) {
+                    isRoot = false;
+                }
+            });
+
+            if (isRoot) {
+                rootNodes.push(node);
+            }
+        });
+
+        return rootNodes;
+    }
+
+    updateGraphTotalTimeEstimates(rootNodes, graph) {
+        // Update the total estimates for the entire graph
+        rootNodes.forEach(node => {
+            this.updateTotalTimeEstimate(node, graph);
+        });
+
+        return graph;
+    }
+
+    updateTotalTimeEstimate(node, graph) {
+        if (node === undefined || node.status === 'Done') return 0;
+        // Update the total time estimates for a node recursively
+        node.totalTimeEstimate = parseFloat(node.timeEstimate);
+
+        // Get children Ids
+        let childrenIds = [];
+        graph.edges.forEach(edge => {
+            if (edge.target === node.id) {
+                childrenIds.push(edge.source);
+            }
+        });
+
+        // Get children ids as nodes
+        let children = childrenIds.map(id => {
+            for (let i = 0; i < graph.nodes.length; i++) {
+                if (graph.nodes[i].id === id) {
+                    return graph.nodes[i];
+                }
+            }
+        });
+
+        // Add their time estimate to the parents
+        let max = 0;
+        children.forEach(child => {
+            max = Math.max(this.updateTotalTimeEstimate(child, graph), max);
+        });
+
+        node.totalTimeEstimate += max;
+
+        return node.totalTimeEstimate;
+    }
+
 
     // Creates a new node between two edges
     onCreateEdge = (sourceViewNode: INode, targetViewNode: INode) => {
@@ -309,6 +389,8 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
     };
 
     redrawAndSave = () => {
+        this.calculateDateEstimates();
+
         this.setState({
             layoutEngineType: 'None',
         });
@@ -328,22 +410,13 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
         // get a callback when the server responds
         xhr.addEventListener('load', () => {
             // update the state of the component with the result here
-            console.log(xhr);
         });
 
         xhr.setRequestHeader('Content-Type', 'application/json');
 
         // send the request
         xhr.send(JSON.stringify(this.state.graph));
-
-        // TODO
     }
-
-    onSelectPanNode = (event: any) => {
-        if (this.GraphView) {
-            this.GraphView.panToNode(event.target.value, true);
-        }
-    };
 
     /*
      * Render
@@ -384,6 +457,7 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
                             <select
                                 className="node-status"
                                 onChange={this.handleStatusChange}
+                                value={this.state.selected.status}
                             >
                                 <option value={'ToDo'}>To Do</option>
                                 <option value={'InProgress'}>In Progress</option>

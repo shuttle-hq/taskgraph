@@ -37,12 +37,28 @@ class NodeText extends React.Component<INodeTextProps> {
     }
   }
 
+  completionDateIn(days) {
+    let today = new Date();
+    let endDate = "",  count = 0;
+    if(days === 0) return today;
+    while(count < days) {
+      endDate = new Date(today.setDate(today.getDate() + 1));
+      if (endDate.getDay() !== 0 && endDate.getDay() !== 6) {
+        //Date.getDay() gives weekday starting from 0(Sunday) to 6(Saturday)
+        count++;
+      }
+    }
+    return endDate;
+  }
+
   render() {
     const { data, nodeTypes, isSelected, maxTitleChars } = this.props;
     const lineOffset = 18;
     const title = data.title;
     const description = data.description;
     const timeEstimate = data.timeEstimate;
+    const completionDate = this.completionDateIn(data.totalTimeEstimate);
+    let formatted_date = completionDate.getFullYear() + "-" + (completionDate.getMonth() + 1) + "-" + completionDate.getDate()
 
     const className = GraphUtils.classNames('node-text', {
       selected: isSelected,
@@ -58,6 +74,13 @@ class NodeText extends React.Component<INodeTextProps> {
               : description}
           </tspan>
         )}
+        <tspan opacity={0.8} x={0} dy={lineOffset} fontSize="10px">
+          {title && (
+              <tspan opacity={0.8} x={0} dy={lineOffset} fontSize="10px">
+                Completion Date: {formatted_date}
+              </tspan>
+          )}
+        </tspan>
         <tspan opacity={0.8} x={0} dy={lineOffset} fontSize="10px">
           {title && timeEstimate > 0 && (
             <tspan opacity={0.8} x={0} dy={lineOffset} fontSize="10px">

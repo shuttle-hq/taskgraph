@@ -33,6 +33,7 @@ export type INode = {
   description: string,
   timeEstimate: number,
   status: string,
+  totalTimeEstimate? : number | null,
   x?: number | null,
   y?: number | null,
   type?: string | null,
