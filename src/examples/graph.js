@@ -23,6 +23,8 @@ import * as React from 'react';
 
 import {GraphView, type IEdgeType as IEdge, type INodeType as INode, type LayoutEngineType,} from '../';
 import GraphConfig, {EMPTY_EDGE_TYPE, EMPTY_TYPE, NODE_KEY,} from './graph-config';
+import Status from '../components/node'
+
 
 type IGraph = {
     nodes: INode[],
@@ -153,13 +155,13 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
         const i = this.getNodeIndex(viewNode);
 
         graph.nodes[i] = viewNode;
-        this.setState({graph});
+        this.setState({graph}, this.redrawAndSave());
     };
 
     // Node 'mouseUp' handler
     onSelectNode = (viewNode: INode | null) => {
         // Deselect events will send Null viewNode
-        this.setState({selected: viewNode});
+        this.setState({selected: viewNode}, this.redrawAndSave());
 
         if (viewNode !== null) {
         }
@@ -167,7 +169,7 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
 
     // Edge 'mouseUp' handler
     onSelectEdge = (viewEdge: IEdge) => {
-        this.setState({selected: viewEdge});
+        this.setState({selected: viewEdge}, this.redrawAndSave());
     };
 
     // Updates the graph with a new node
@@ -178,7 +180,7 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
             id: Date.now(),
             title: '',
             description: '',
-            status: '',
+            status: Status.todo,
             timeEstimate: 0,
             EMPTY_TYPE,
             x,
@@ -459,9 +461,9 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
                                 onChange={this.handleStatusChange}
                                 value={this.state.selected.status}
                             >
-                                <option value={'ToDo'}>To Do</option>
-                                <option value={'InProgress'}>In Progress</option>
-                                <option value={'Done'}>Done</option>
+                                <option value={Status.todo}>To Do</option>
+                                <option value={Status.inProgress}>In Progress</option>
+                                <option value={Status.done}>Done</option>
                             </select>
                         </div>
                     )}

@@ -45,7 +45,7 @@ const EmptyNodeShape = (
 
 const CustomEmptyShape = (
   <symbol viewBox="0 0 100 100" id="customEmpty">
-    <circle cx="50" cy="50" r="45" />
+    <circle cx="50" cy="50" r="45"/>
   </symbol>
 );
 
