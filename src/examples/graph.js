@@ -23,7 +23,7 @@ import * as React from 'react';
 
 import {GraphView, type IEdgeType as IEdge, type INodeType as INode, type LayoutEngineType,} from '../';
 import GraphConfig, {EMPTY_EDGE_TYPE, EMPTY_TYPE, NODE_KEY,} from './graph-config';
-import Status from '../components/node'
+import Node, {Status} from '../components/node';
 
 
 type IGraph = {
@@ -461,9 +461,9 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
                                 onChange={this.handleStatusChange}
                                 value={this.state.selected.status}
                             >
-                                <option value={Status.todo}>To Do</option>
-                                <option value={Status.inProgress}>In Progress</option>
-                                <option value={Status.done}>Done</option>
+                                <option value={Status.todo}>todo</option>
+                                <option value={Status.inProgress}>in_progress</option>
+                                <option value={Status.done}>done</option>
                             </select>
                         </div>
                     )}

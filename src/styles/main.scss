@@ -42,12 +42,80 @@ $background-color: #f9f9f9;
     height: 100%;
   }
 
-  .node {
+  .node-todo {
     .shape {
-      > use.node {
+      > use.node-todo {
         color: $primary-color;
         stroke: $dark-color;
         fill: $light-color;
+        filter: url(#dropshadow);
+        stroke-width: 0.5px;
+        cursor: pointer;
+        user-select: none;
+
+        &.hovered {
+          stroke: $primary-color;
+        }
+        &.selected {
+          color: $light-color;
+          stroke: $primary-color;
+          stroke-width: 1px;
+          fill: $primary-color;
+        }
+      }
+    }
+
+    .node-text {
+      fill: $dark-color;
+      cursor: pointer;
+      user-select: none;
+      &.selected {
+        fill: $light-color;
+        stroke: $light-color;
+      }
+    }
+  }
+
+  .node-in-progress {
+    .shape {
+      > use.node-in-progress {
+        color: $primary-color;
+        stroke: $dark-color;
+        fill: $task-in-progress-color;
+        filter: url(#dropshadow);
+        stroke-width: 0.5px;
+        cursor: pointer;
+        user-select: none;
+
+        &.hovered {
+          stroke: $primary-color;
+        }
+        &.selected {
+          color: $light-color;
+          stroke: $primary-color;
+          stroke-width: 1px;
+          fill: $primary-color;
+        }
+      }
+    }
+
+    .node-text {
+      fill: $dark-color;
+      cursor: pointer;
+      user-select: none;
+      &.selected {
+        fill: $light-color;
+        stroke: $light-color;
+      }
+    }
+  }
+
+  .node-done {
+    .shape {
+      > use.node-done {
+        color: $primary-color;
+        stroke: $dark-color;
+        fill: $task-done-color;
         filter: url(#dropshadow);
         stroke-width: 0.5px;
         cursor: pointer;

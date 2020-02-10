@@ -41,11 +41,11 @@ export type INode = {
     [key: string]: any,
 };
 
-export const Status = Object.freeze({
+export const Status = {
   todo: "todo",
   inProgress: "in-progress",
   done: "done"
-});
+};
 
 type INodeProps = {
     data: INode,
@@ -371,10 +371,13 @@ class Node extends React.Component<INodeProps, INodeState> {
     render() {
         const {x, y, hovered, selected} = this.state;
         const {opacity, id, data} = this.props;
-        const className = GraphUtils.classNames('node', data.type, {
+        const className = GraphUtils.classNames('node-' + data.status, data.type, {
             hovered,
             selected,
         });
+
+        console.log(className)
+
 
         return (
             <g
