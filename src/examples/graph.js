@@ -23,7 +23,7 @@ import * as React from 'react';
 
 import {GraphView, type IEdgeType as IEdge, type INodeType as INode, type LayoutEngineType,} from '../';
 import GraphConfig, {EMPTY_EDGE_TYPE, EMPTY_TYPE, NODE_KEY,} from './graph-config';
-import Node, {Status} from '../components/node';
+import {Status} from '../components/node';
 
 
 type IGraph = {
@@ -207,6 +207,8 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
         this.setState({graph, selected: null}, this.redrawAndSave());
     };
 
+
+
     calculateDateEstimates() {
         // We estimate the predicted time of completion of root nodes,
         // By summing the time of their dependencies recursively.
@@ -257,7 +259,7 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
     }
 
     updateTotalTimeEstimate(node, graph) {
-        if (node === undefined || node.status === 'Done') return 0;
+        if (node === undefined || node.status === Status.done) return 0;
         // Update the total time estimates for a node recursively
         node.totalTimeEstimate = parseFloat(node.timeEstimate);
 
@@ -389,6 +391,7 @@ class Graph extends React.Component<IGraphProps, IGraphState> {
         graph.nodes = [...graph.nodes, newNode];
         this.forceUpdate();
     };
+
 
     redrawAndSave = () => {
         this.calculateDateEstimates();

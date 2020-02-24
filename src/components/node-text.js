@@ -18,6 +18,7 @@
 import * as React from 'react';
 import GraphUtils from '../utilities/graph-util';
 import { type INode } from './node';
+import {Status} from '../components/node';
 
 type INodeTextProps = {
   data: INode,
@@ -37,10 +38,10 @@ class NodeText extends React.Component<INodeTextProps> {
     }
   }
 
-  completionDateIn(days) {
+  completionDateIn(days, status) {
     let today = new Date();
     let endDate = "",  count = 0;
-    if(days === 0) return today;
+    if(days === 0 || status === Status.done) return today;
     while(count < days) {
       endDate = new Date(today.setDate(today.getDate() + 1));
       if (endDate.getDay() !== 0 && endDate.getDay() !== 6) {
@@ -57,7 +58,7 @@ class NodeText extends React.Component<INodeTextProps> {
     const title = data.title;
     const description = data.description;
     const timeEstimate = data.timeEstimate;
-    const completionDate = this.completionDateIn(data.totalTimeEstimate);
+    const completionDate = this.completionDateIn(data.totalTimeEstimate, data.status);
     let formatted_date = completionDate.getFullYear() + "-" + (completionDate.getMonth() + 1) + "-" + completionDate.getDate()
 
     const className = GraphUtils.classNames('node-text', {
