@@ -1,9 +1,19 @@
 # TaskGraph
-To run use ./run_local.sh.
+To run this locally, start by installing the dependencies:
 
-Your default browser should then launch at localhost:3000 along with the backend at localhost:3001.
+```
+npm install
+```
 
-Furthermore a docker container should start up running the mongodb backend.
+Then execute the launch script:
+
+```
+./run_local.sh
+```
+
+Your default browser should then launch at `localhost:3000`, along with the backend at `localhost:3001`.
+
+Furthermore, a Docker container should start up running the mongodb backend.
 
 Below is the documentation from the forked repository.
 
